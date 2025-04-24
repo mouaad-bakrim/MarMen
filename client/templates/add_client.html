@@ -1,0 +1,217 @@
+{% extends "base/base.html" %}
+
+{% load static %}
+{% block title %}Nouvel Employé | {% endblock %}
+
+{% block css %}
+{% endblock css %}
+
+{% block toolbar %}
+<div id="kt_app_toolbar" class="app-toolbar pt-6 pb-2 rounded-top">
+    <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+        <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+            <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+                Nouvel Client</h1>
+            <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                <li class="breadcrumb-item text-muted">
+                    <a href="" class="text-muted text-hover-primary">Accueil</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                </li>
+                <li class="breadcrumb-item text-muted">Nouvel Client</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card mt-4 mb-5 shadow-sm border-2">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="fw-bolder m-0">Nouvel Client</h3>
+        </div>
+    </div>
+    <div id="kt_account_profile_details">
+        <form action="" method="post" id="kt_order_form" autocomplete="off">
+            {% csrf_token %}
+            <div class="card-body p-lg-10">
+
+                <div class="d-flex flex-column flex-lg-row">
+                    <div class="flex-lg-row-fluid me-0">
+                       <!-- Nom -->
+<div class="row mb-5">
+    <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.nom.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span class="required">Nom :</span>
+        </label>
+        <input type="text" id="{{ form.nom.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.nom.name }}" placeholder="Entrez le nom">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.nom.errors }}
+        </div>
+    </div>
+
+      <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.ice.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >ICE :</span>
+        </label>
+        <input type="text" id="{{ form.ice.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.ice.name }}" placeholder="Entrez le numéro de ICE">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.ice.errors }}
+        </div>
+    </div>
+      <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.rc.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >Registre de commerce : </span>
+        </label>
+        <input type="text" id="{{ form.rc.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.phone.name }}" placeholder="Entrez le numéro de rc">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.rc.errors }}
+        </div>
+    </div>
+      <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.idf.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >Identifiant fiscal : </span>
+        </label>
+        <input type="text" id="{{ form.idf.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.idf.name }}" placeholder="Entrez le numéro de idf">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.idf.errors }}
+        </div>
+    </div>
+
+
+</div>
+<div class="row mb-5">
+ <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.ville.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >Ville :</span>
+        </label>
+        <input type="text" id="{{ form.ville.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.ville.name }}" placeholder="Entrez La Ville">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.ville.errors }}
+        </div>
+    </div>
+  <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.adresse_livraison.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >adresse_livraison :</span>
+        </label>
+        <input type="text" id="{{ form.adresse_livraison.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.adresse_livraison.name }}" placeholder="Entrez La adresse_livraison">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.adresse_livraison.errors }}
+        </div>
+    </div>
+    <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.adresse_facturation.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >adresse_facturation :</span>
+        </label>
+        <input type="text" id="{{ form.adresse_facturation.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.adresse_facturation.name }}" placeholder="Entrez La adresse_facturation">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.adresse_facturation.errors }}
+        </div>
+    </div>
+      <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.adresse.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >adresse :</span>
+        </label>
+        <input type="text" id="{{ form.adresse.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.adresse.name }}" placeholder="Entrez La adresse">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.adresse.errors }}
+        </div>
+    </div>
+
+      <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.phone.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >Téléphone :</span>
+        </label>
+        <input type="text" id="{{ form.phone.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.phone.name }}" placeholder="Entrez le numéro de téléphone">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.phone.errors }}
+        </div>
+    </div>
+      <div class="col-md-3 fv-row fv-plugins-icon-container">
+        <label for="{{ form.matricule.id_for_label }}" class="fs-6 fw-semibold form-label">
+            <span >matricule :</span>
+        </label>
+        <input type="text" id="{{ form.matricule.id_for_label }}" class="form-control form-control-solid"
+               name="{{ form.matricule.name }}" placeholder="Entrez le numéro de Matricule">
+        <div class="fv-plugins-message-container invalid-feedback">
+            {{ form.matricule.errors }}
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+<!-- Position et Date de fin -->
+<div class="row mb-5">
+   <div class="col-md-6 fv-row fv-plugins-icon-container">
+    <label for="{{ form.category.id_for_label }}" class="fs-6 fw-semibold form-label">
+        <span class="required">Type client</span>
+    </label>
+    <select id="{{ form.category.id_for_label }}" class="form-select form-select-solid"
+            name="{{ form.category.name }}">
+        <option value="" disabled selected>Veuillez sélectionner une category</option>
+        {% for choice_value, choice_label in form.category.field.choices %}
+            <option value="{{ choice_value }}" {% if choice_value == form.category.value %}selected{% endif %}>
+                {{ choice_label }}
+            </option>
+        {% endfor %}
+    </select>
+    <div class="fv-plugins-message-container invalid-feedback">
+        {{ form.category.errors }}
+    </div>
+</div>
+
+  <div class="col-md-6 fv-row fv-plugins-icon-container">
+    <label for="{{ form.site.id_for_label }}" class="fs-6 fw-semibold form-label">
+        <span class="required">Site</span>
+    </label>
+    <select id="{{ form.site.id_for_label }}" class="form-select form-select-solid"
+            name="{{ form.site.name }}">
+        <!-- Placeholder option -->
+        <option value="" disabled selected>Veuillez sélectionner un site</option>
+
+        {% for choice in form.site.field.queryset %}
+            <option value="{{ choice.pk }}" {% if choice.pk == form.site.value %}selected{% endif %}>
+                {{ choice }}
+            </option>
+        {% endfor %}
+    </select>
+    <div class="fv-plugins-message-container invalid-feedback">
+        {{ form.site.errors }}
+    </div>
+</div>
+
+</div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer mt-4">
+                <div class="d-flex justify-content-end">
+                    <a href="" class="btn btn-white me-3">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="svg-icon svg-icon-1 me-5"><i class="fas fa-check fs-4"></i></span>Ajouter Client
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+{% endblock javascript %}

@@ -77,8 +77,8 @@
 											<i class="fa-solid fa-users fs-2 text-secondary"></i>
 										</span>
                              <a class="menu-link {% if active_item == 'plafont'  and active_menu == 'invoice'  %}active{% endif %}"
-                                href="">
-										<span class="menu-title">Upload</span>
+                                href="{% url 'client:ajouter_client' %}">
+										<span class="menu-title">Suivi Client</span>
    </a>
 									</span>
 
@@ -92,7 +92,7 @@
 										</span>
                              <a class="menu-link {% if active_item == 'plafont'  and active_menu == 'invoice'  %}active{% endif %}"
                                 href="">
-										<span class="menu-title">Suivi de Collaborateurs</span>
+										<span class="menu-title">Suivi Produit</span>
    </a>
 									</span>
 
@@ -107,42 +107,12 @@
                                 </span>
                      <a class="menu-link {% if active_item == 'plafont'  and active_menu == 'invoice'  %}active{% endif %}"
                         href="">
-                                <span class="menu-title">Liste des Factures  </span>
+                                <span class="menu-title">Ajouter Devis  </span>
 </a>
                             </span>
 
             </div>
-                    <div
-                            class="menu-item menu-accordion  {% if active_menu == 'invoice' %}here show{% endif %} ">
-                        <!--begin:Menu link-->
-                        <span class="menu-link">
-										<span class="menu-icon">
-											<i class="fa-solid fa-droplet fs-2 text-info"></i>
 
-										</span>
-                             <a class="menu-link {% if active_item == 'plafont'  and active_menu == 'invoice'  %}active{% endif %}"
-                                href="">
-										<span class="menu-title">Factures d'EAU</span>
-   </a>
-									</span>
-
-                    </div>
-
-            <div
-            class="menu-item menu-accordion  {% if active_menu == 'invoice' %}here show{% endif %} ">
-        <!--begin:Menu link-->
-        <span class="menu-link">
-                        <span class="menu-icon">
-                            <i class="fa-solid fa-bolt fs-2 text-warning"></i>
-
-                        </span>
-             <a class="menu-link {% if active_item == 'plafont'  and active_menu == 'invoice'  %}active{% endif %}"
-                href="">
-                        <span class="menu-title">Factures d'Électricité</span>
-</a>
-                    </span>
-
-    </div>
 
                 </div>
 
