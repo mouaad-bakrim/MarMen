@@ -1,0 +1,507 @@
+{% extends "base/base.html" %}
+
+{% load static %}
+{% block title %}Bienvenue sur {% endblock %}
+
+
+{% block css %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+<style>
+    .card-flush {
+        border: none;
+    }
+    .card-header {
+        border-bottom: 1px solid #eaeaea;
+    }
+    .table-light th {
+        background-color: #f8f9fa;
+    }
+    .fs-7 {
+        font-size: 0.875rem;
+    }
+    .fs-6 {
+        font-size: 1rem;
+    }
+    .fs-3x {
+        font-size: 1.875rem;
+    }
+    .badge-light-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .badge-light-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .badge-light-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    .card {
+border-radius: 0.5rem; /* Bordures plus arrondies */
+border: 1px solid rgba(0, 0, 0, 0.1); /* Bordure légère */
+}
+
+</style>
+
+{% endblock css %}
+
+{% block toolbar %}
+
+
+<div id="kt_app_toolbar" class="app-toolbar mt-1" style="height: 50px;">
+    <!--begin::Toolbar container-->
+    <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+        <!--begin::Page title-->
+        <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+            <!--begin::Title-->
+            <h1 class="page-heading d-flex text-gray-700 fw-bold fs-5 flex-column justify-content-center my-0">
+
+                Tableau de bord: Administrateur
+
+            </h1>        <!--end::Title-->
+            <!--begin::Date-->
+            <h2 class="text-gray-600 fw-normal fs-6 my-0">Date: {{ date_yesterday|date:"d-m-Y" }}</h2>
+            <!--end::Date-->
+            <!--begin::Breadcrumb-->
+        </div>
+        <!--end::Page title-->
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="row gy-5 gx-xl-10  mt-2 ">
+
+
+  <div class="row gy-5 gx-xl-10 mb-xl-6 ">
+    <!--begin::Col-->
+    <div class="col-sm-12 col-xl-3">
+
+        <!--begin::Card widget 2-->
+        <div class="card h-lg-100 shadow-sm bg-danger text-white">
+            <!--begin::Body-->
+            <div class="card-body d-flex justify-content-between align-items-start flex-column">
+                <!--begin::Icon-->
+                <div class="m-0">
+                    <i class="ki-duotone ki-user fs-2hx text-white">
+                        <span class="path1"></span><span class="path2"></span></span>
+                    </i>
+                </div>
+                <!--end::Icon-->
+
+                <!--begin::Section-->
+                <div class="d-flex flex-column my-3">
+                    <!--begin::Greeting-->
+                    <span class="fw-semibold fs-3">Bonjour{% if user.first_name %} {{ user.first_name }}{% endif %} !</span>
+                    <!--end::Greeting-->
+
+                    <!--begin::Company-->
+                    <div class="m-0">
+                        <span class="fw-semibold fs-6  opacity-75">
+
+                        </span>
+                    </div>
+                    <!--end::Company-->
+                </div>
+                <!--end::Section-->
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Card widget 2-->
+
+
+    </div>
+    <!--end::Col-->
+
+    <!--begin::Col-->
+    <div class="col-sm-4 col-xl-3">
+
+      <!--begin::Card widget 2-->
+      <div class="card h-lg-100 shadow-sm bg-primary
+      text-white ">
+        <!--begin::Body-->
+        <div class="card-body d-flex justify-content-between align-items-start flex-column ">
+          <!--begin::Icon-->
+          <div class="m-0">
+
+<i class="fa fa-circle-check fs-2hx text-white"></i>
+
+          </div>
+          <!--end::Icon-->
+
+          <!--begin::Section-->
+          <div class="d-flex flex-column my-3">
+            <!--begin::Number-->
+            <span class="fw-semibold fs-2x lh-1 ls-n2">{{ factures_terminees }}</span>
+            <!--end::Number-->
+
+            <!--begin::Follower-->
+            <div class="m-0">
+              <span class="fw-semibold fs-6 opacity-75">
+                Factures Terminees
+              </span>
+
+            </div>
+            <!--end::Follower-->
+          </div>
+          <!--end::Section-->
+
+        </div>
+        <!--end::Body-->
+      </div>
+      <!--end::Card widget 2-->
+
+
+    </div>
+    <!--end::Col-->
+
+    <!--begin::Col-->
+    <div class="col-sm-4 col-xl-3">
+
+      <!--begin::Card widget 2-->
+      <div class="card h-lg-100 shadow-sm bg-info
+      text-white">
+        <!--begin::Body-->
+        <div class="card-body d-flex justify-content-between align-items-start flex-column">
+          <!--begin::Icon-->
+          <div class="m-0">
+          <!-- <i class="fa fa-dollar-sign fs-2hx text-white"> -->
+          <i class="fa fa-solid fa-clock fs-2hx text-white"></i>
+
+
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+              <span class="path4"></span>
+            </i>
+          </div>
+          <!--end::Icon-->
+
+          <!--begin::Section-->
+          <div class="d-flex flex-column my-3">
+            <!--begin::Number-->
+            <span class="fw-semibold fs-2x lh-1 ls-n2">{{factures_attente  }}</span>
+            <!--end::Number-->
+
+            <!--begin::Follower-->
+            <div class="m-0">
+              <span class="fw-semibold fs-6 opacity-75">
+                Factures en attente
+              </span>
+
+            </div>
+            <!--end::Follower-->
+          </div>
+          <!--end::Section-->
+
+        </div>
+        <!--end::Body-->
+      </div>
+      <!--end::Card widget 2-->
+    </div>
+    <!--end::Col-->
+    <div class="col-sm-4 col-xl-3">
+
+        <!--begin::Card widget 2-->
+        <div class="card h-lg-100 shadow-sm bg-primary
+        text-white">
+          <!--begin::Body-->
+          <div class="card-body d-flex justify-content-between align-items-start flex-column">
+            <!--begin::Icon-->
+            <div class="m-0">
+            <i class="fa fa-dollar-sign fs-2hx text-white">
+  
+  
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+                <span class="path4"></span>
+              </i>
+            </div>
+            <!--end::Icon-->
+  
+            <!--begin::Section-->
+            <div class="d-flex flex-column my-3">
+              <!--begin::Number-->
+              <span class="fw-semibold fs-2x lh-1 ls-n2">{{ revenus_total|floatformat:2 }}</span>
+              <!--end::Number-->
+  
+              <!--begin::Follower-->
+              <div class="m-0">
+                <span class="fw-semibold fs-6 opacity-75">
+                  Total Facture
+                </span>
+  
+              </div>
+              <!--end::Follower-->
+            </div>
+            <!--end::Section-->
+  
+          </div>
+          <!--end::Body-->
+        </div>
+        <!--end::Card widget 2-->
+      </div>
+  </div>
+
+
+  {% if banners %}
+  <div class="row mt-3 ">
+  <div id="carouselIndicators" class="carousel slide " data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        {% if banners|length > 1 %}
+        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        {% endif %}
+        {% if banners|length > 2 %}
+        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        {% endif %}
+      </div>
+      <div class="carousel-inner">
+          {% for banner in banners %}
+            <style>
+                @media (max-width: 767px) {
+                    #carousel-item-{{ banner.pk}} img {
+                        content: url("{{ banner.md_down_image.url }}");
+                    }
+                }
+            </style>
+            <div class="carousel-item {% if forloop.first %}active{% endif %} " id="carousel-item-{{ banner.pk}}">
+                <img src="{{ banner.md_up_image.url }}" class="d-block w-100 rounded" alt="{{ banner.title }}" >
+                <div class="carousel-caption d-none d-md-block" style="color: {{ banner.text_color }};">
+                <h5>{{ banner.title }}</h5>
+                <p>{{ banner.description }}</p>
+                </div>
+            </div>
+          {% endfor %}
+      </div>
+      {% if banners|length > 1 %}
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      {% endif %}
+  </div>
+  </div>
+  {% endif %}
+
+  <div class="row  gy-5 gx-xl-10 mt-3">
+    <div class="col-12 col-lg-6  mb-5 mb-xl-10">
+        <!--begin::Table Widget 4-->
+        <div class="card h-400px  shadow-sm border-2">
+            <!--begin::Card header-->
+            <div class="card-header">
+                <!--begin::Title-->
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold text-gray-800">📈 Évolution des montants par mois</span>
+                    {% comment %} <span class="text-gray-500 mt-1 fw-semibold fs-6">Avg. 57 orders per day</span> {% endcomment %}
+                </h3>
+                <!--end::Title-->
+            </div>
+            <!--end::Card header-->
+
+            <!--begin::Card body-->
+            <div class="card-body">
+                    <canvas id="montantParMoisChart"></canvas>
+                </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Table Widget 4-->
+    </div>
+
+
+    {% comment %} Tickets {% endcomment %}
+    <div class="col-12 col-lg-6 mb-5 mb-xl-10">
+        <!--begin::Table Widget 4-->
+        <div class="card h-400px shadow-sm border-2">
+            <!--begin::Card header-->
+            <div class="card-header">
+                <!--begin::Title-->
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold text-gray-800">📊 Factures par statut
+</span>
+
+                </h3>
+                <!--end::Title-->
+            </div>
+            <!--end::Card header-->
+
+            <!--begin::Card body-->
+            <div class="card-body pt-2 overflow-auto">
+                <!--begin::Table-->
+                <div class="card-body">
+                    <canvas id="factureStatusChart"></canvas>
+                </div>
+                <!--end::Table-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Table Widget 4-->
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+ <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+    {% for banner in banners %}
+      <li data-target="#carouselIndicators" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+    {% endfor %}
+  </ol>
+  <div class="carousel-inner">
+    {% for banner in banners %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <img src="{{ banner.md_up_image.url }}" class="d-block w-100" alt="{{ banner.title }}" style="background-color: {{ banner.background_color }};">
+        <div class="carousel-caption d-none d-md-block" style="color: {{ banner.text_color }};">
+          <h5>{{ banner.title }}</h5>
+          <p>{{ banner.description }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <!--begin::Content wrapper-->
+    <div class="d-flex flex-column flex-column-fluid">
+        <!--begin::Content-->
+
+        <div id="kt_app_content" class="app-content flex-column-fluid mt-5">
+
+
+            <div class="col-xl-12">
+
+</div>
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock content %}
+
+
+{% block javascript %}
+
+<script>
+    document.querySelector('#category_{{ productCategory.id }}').indeterminate = true;
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch("")
+        .then(response => response.json())
+        .then(data => {
+            // --- Graphique "Facture par statut" ---
+            const ctx1 = document.getElementById('factureStatusChart').getContext('2d');
+            const factureStatusChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: data.facture_status.map(item => item.status),
+                    datasets: [{
+                        label: 'Nombre de factures',
+                        data: data.facture_status.map(item => item.total),
+                        backgroundColor: ['#ff9800','#4caf50',  '#f44336', '#2196f3'],
+                        hoverOffset: 4
+                    }]
+                },
+               options: {
+    maintainAspectRatio: false, // Désactive l'ajustement automatique du ratio
+    responsive: true, // Rend le graphique réactif
+    plugins: {
+        legend: {
+            display: true,
+            position: 'bottom'
+        }
+    }
+}
+
+            });
+
+
+            // --- Graphique "Montant par mois" ---
+            const ctx3 = document.getElementById('montantParMoisChart').getContext('2d');
+            const montantParMoisChart = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: data.montant_par_mois.map(item => `Mois ${item.month}`),
+                    datasets: [{
+                        label: 'Montant total (DH)',
+                        data: data.montant_par_mois.map(item => item.total),
+                        backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                        borderColor: '#2196f3',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                 maintainAspectRatio: false, // Désactive l'ajustement automatique du ratio
+    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Mois'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        });
+});
+</script>
+
+<script>
+    const consommationJson = '{{ consommation_json|escapejs }}';
+    console.log(consommationJson);  // Pour vérifier les données JSON
+</script>
+
+{% endblock javascript%}
