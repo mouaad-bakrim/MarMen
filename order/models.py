@@ -25,97 +25,47 @@ class Order(models.Model):
         default_permissions = ['add', 'change', 'view']
         db_table = "order_order"
 
-
-
-
     client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='Client')
-    date = models.DateField(verbose_name="Date", null=True, blank=True)
+    date = models.DateField(verbose_name="Date", default=timezone.now)
     montant = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Montant', default=0)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, verbose_name="Site", null=True, blank=True)
 
-
     def __str__(self):
-        return f"order - {self.id}"
+        return f"Order {self.id}"
+
+    def update_montant_total(self):
+        total = self.order.aggregate(
+            total=models.Sum('montant')
+        )['total'] or 0
+        self.montant = total
+        self.save()
+
+    def create_devis_from_order(self):
+
+        with transaction.atomic():
+            # 1. Créer un Devis
+            devis = Devis.objects.create(
+                code=f"DEV-{timezone.now().strftime('%Y%m%d')}-{self.id}",
+                client=self.client,
+                site=self.site,
+                date=self.date,
+                tva=10,  # TVA fixe à 10% par défaut
+            )
+
+            # 2. Créer les lignes du Devis à partir des OrderLigne
+            for order_ligne in self.order.all():
+                DevisLinge.objects.create(
+                    devis=devis,
+                    produit=order_ligne.produit,
+                    unite="U",  # ou récupère l'unité depuis Produit si tu l'as
+                    quantite=order_ligne.quantite,
+                    prix=order_ligne.prix,
+                    remise=order_ligne.remise,
+                    montant=order_ligne.montant,
+                )
+            return devis
 
     from django.db import transaction
-
-    def save(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-
-        if user and not self.site:
-            self.site = user.profile.site
-
-        # Créer un devis même s'il en existe déjà pour ce client, site, et date
-        devis, created = Devis.objects.get_or_create(
-            date=self.date,
-            client=self.client,
-            site=self.site,
-            tva=20,
-        )
-
-        if created:
-            devis.code = self.generate_unique_devis_code()  # Générer un code unique pour chaque devis
-            devis.save()  # Sauvegarder le Devis dans la base de données
-
-        # Associer le devis créé à l'instance actuelle
-        self.devis = devis
-
-        # Start transaction to avoid duplication
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-
-            # Now iterate over the articles and create only unique DevisLinge entries
-            for commande in self.articles.all():
-                # Check if this ArticleCommande_direct has already been added
-                existing_article = OrderLigne.objects.filter(
-                    lubrifiant=self,
-                    article_site=commande.article_site
-                ).first()
-
-                if not existing_article:  # Avoid duplication
-                    # Create the ArticleCommande_direct entry if it doesn't already exist
-                    OrderLigne.objects.create(
-                        lubrifiant=self,
-                        article_site=commande.article_site,
-                        prix=commande.prix,
-                        quantite=commande.quantite,
-                        remise=commande.remise,
-                    )
-
-                # Now create the corresponding DevisLinge entry if not already created
-                existing_line = DevisLinge.objects.filter(
-                    devis=self.devis,
-                    article=commande.article_site
-                ).first()
-
-                if not existing_line:  # Avoid duplication in DevisLinge
-                    DevisLinge.objects.create(
-                        devis=self.devis,
-                        unite="PCE",
-                        article=commande.article_site,
-                        quantite=commande.quantite,
-                        prix=commande.article_site.prix,
-                        remise=commande.remise,
-                    )
-
-            # After adding articles, update the total amount
-            self.montant = sum(
-                (commande.prix * commande.quantite) * (1 - (commande.remise / 100)) for commande in self.articles.all())
-
-            super().save(*args, **kwargs)
-
-    def generate_unique_devis_code(self):
-        """Génère un code unique pour le devis."""
-        last_id = Devis.objects.aggregate(last_id=models.Max('id'))['last_id'] or 0
-        return f"DEV/{timezone.now().strftime('%Y')}{last_id + 1}"
-
-    @property
-    def montant_formate(self):
-        return f"{self.montant:,.2f}"
-
-    @property
-    def quantite_totale(self):
-        return self.articles.aggregate(total=models.Sum('quantite'))['total'] or 0
 
 
 class OrderLigne(models.Model):
@@ -141,23 +91,18 @@ class OrderLigne(models.Model):
     montant = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Montant', default=0)
     remise = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Remise (%)')
 
-    def __str__(self):
-        return f"{self.article_site.article.name} - {self.quantite} unités"
-
     def save(self, *args, **kwargs):
-        # Apply the remise (discount) to the total price
-        total_prix = self.prix * self.quantite
-        remise_amount = total_prix * (self.remise / 100)
-        self.montant = total_prix - remise_amount
+        # Calcule automatiquement le montant avant de sauvegarder
+        remise_appliquee = (1 - (self.remise / 100))
+        self.montant = self.prix * self.quantite * remise_appliquee
 
         super().save(*args, **kwargs)
 
-        # Update the total montant in the related Lubrifiant_direct
-        total_montant = self.lubrifiant.articles.aggregate(
-            total=models.Sum('montant')
-        )['total'] or 0
-        self.lubrifiant.montant = total_montant
-        self.lubrifiant.save(update_fields=['montant'])
+        # Après avoir sauvé la ligne, on met à jour le montant total de la commande
+        self.order.update_montant_total()
+
+    def __str__(self):
+        return f"{self.produit} - {self.quantite} unités"
 
 
 from django.db import transaction

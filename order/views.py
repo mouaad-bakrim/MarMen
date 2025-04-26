@@ -12,9 +12,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django_tables2 import RequestConfig
 
-from .models import Order, OrderLigne, Produit  # À adapter selon ton projet
+from base.utils import PagedFilteredTableView
+from .models import Order, OrderLigne, Produit, Devis  # À adapter selon ton projet
 from .forms import OrderForm  # Ton formulaire
-from .tables import OrderListTable
+from .tables import OrderListTable, DevisListTable
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +77,7 @@ def add_order(request):
             else:
                 messages.error(request, "Erreur dans les listes d'articles, prix, quantités et remises.")
 
-            return redirect('direct:devis')  # Redirige correctement
+            return redirect('order:add_order')  # Redirige correctement
     else:
         form = OrderForm(user_site=user_sites)
 
@@ -87,7 +88,7 @@ def add_order(request):
     )
 
     for article in articles_list:
-        article['prix'] = float(article['prix']) if isinstance(article['prix'], Decimal) else article['prix']
+        article['prix_unitaire'] = float(article['prix_unitaire']) if isinstance(article['prix_unitaire'], Decimal) else article['prix_unitaire']
 
     today = date.today()
     order = Order.objects.filter(date=today)
@@ -104,3 +105,72 @@ def add_order(request):
         'active_menu': 'direct',
     })
 
+
+class Devis_direct(PagedFilteredTableView):
+    permission_required = 'direct.view_boncommandedirect'
+    model = Devis
+    table_class = DevisListTable
+    #formhelper_class = BonCommandeDirectListFormHelper
+    #filter_class = BonDevisDirectListFilter
+    template_name = 'devis/devis_direct.html'
+    active_item = 'bon_devis_list'
+    active_menu = 'factures'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # Vérification des permissions de l'utilisateur
+        if user.is_superuser:
+            logger.debug("Utilisateur superuser, affichage de tous les devis.")
+            queryset = queryset.order_by(
+                '-date')
+            return queryset
+
+        # Vérification du site utilisateur
+        if hasattr(user, 'profile'):
+            user_sites = user.profile.sites.all()  # Récupérer tous les sites associés à l'utilisateur
+            if user_sites.exists():
+                queryset = queryset.filter(client__site__in=user_sites)
+                logger.debug("Filtrage des devis pour les sites de l'utilisateur.")
+            else:
+                queryset = queryset.none()
+                logger.debug("Aucun site associé à l'utilisateur, aucun devis à afficher.")
+
+        # Tri des devis par date de création (du plus récent au plus ancien)
+        queryset = queryset.order_by('-date')  # Tri descendant par date de création (le plus récent en premier)
+
+        # Log du nombre de résultats trouvés après filtrage
+        logger.debug("Nombre de devis trouvés : %d", queryset.count())
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Récupérer les bons de commande filtrés
+        bons_commande_direct = self.get_queryset()
+
+        # Récupérer les sites de l'utilisateur
+        user_sites = None
+        try:
+            profile = Profile.objects.get(user=self.request.user)
+            user_sites = profile.sites.all()
+            logger.debug("Sites associés au profil de l'utilisateur : %s", user_sites)
+        except Profile.DoesNotExist:
+            logger.warning("Profil de l'utilisateur introuvable, aucun site associé.")
+
+        # Passer 'request' au filtre
+#        filter = self.filter_class(self.request.GET, queryset=bons_commande_direct, request=self.request)
+
+        # Configuration de la table
+
+
+        # Mise à jour du contexte
+        context.update({
+            'active_item': self.active_item,
+            'active_menu': self.active_menu,
+            'user_sites': user_sites,
+
+        })
+
+        return context

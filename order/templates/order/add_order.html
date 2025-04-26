@@ -121,7 +121,7 @@
        <option value="" disabled selected>Veuillez sélectionner un article</option>
         {% for article in articles %}
 
-               <option value="{{ article.id }}" data-price="{{ article.prix }}">{{ article.name }} ({{ article.calibre }})</option>
+               <option value="{{ article.id }}" data-price="{{ article.prix }}">{{ article.nom }} </option>
 
         {% endfor %}
     </select>

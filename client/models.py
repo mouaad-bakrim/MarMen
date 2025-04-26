@@ -11,6 +11,7 @@ class Client(models.Model):
     rc = models.CharField(max_length=50, blank=True, null=True)
     ice = models.CharField(max_length=50, blank=True, null=True)
     date_creation = models.DateField(auto_now_add=True)
+    email = models.EmailField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"{self.nom} {self.prenom or ''}".strip()

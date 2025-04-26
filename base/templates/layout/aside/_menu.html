@@ -8,9 +8,9 @@
     <div class="app-sidebar-logo px-6 py-3" id="kt_app_sidebar_logo" style="text-align: center;">
 
         <a href="" class="{% if not request.user.is_superuser %}d-none{% endif %}">
-            <img alt="Logo" src="{% static 'assets/logo/eqdom_whi.png' %}"
+            <img alt="Logo" src="{% static 'assets/logo/mar.png' %}"
                  class="h-70px w-200px app-sidebar-logo-default"/>
-            <img alt="Logo" src="{% static 'assets/logo/images.png' %}"
+            <img alt="Logo" src="{% static 'assets/logo/mar.png' %}"
                  class="h-30px app-sidebar-logo-minimize"/>
         </a>
 
@@ -83,20 +83,6 @@
 									</span>
 
                     </div>
-                     <div
-                            class="menu-item menu-accordion  {% if active_menu == 'invoice' %}here show{% endif %} ">
-                        <!--begin:Menu link-->
-                        <span class="menu-link">
-										<span class="menu-icon">
-											<i class="fa-solid fa-users fs-2 text-secondary"></i>
-										</span>
-                             <a class="menu-link {% if active_item == 'plafont'  and active_menu == 'invoice'  %}active{% endif %}"
-                                href="">
-										<span class="menu-title">Suivi Produit</span>
-   </a>
-									</span>
-
-                    </div>
 
  <div data-kt-menu-trigger="click"
                          class="menu-item menu-accordion {% if active_menu == 'factures' %}here show{% endif %} ">
@@ -128,7 +114,7 @@
                              <div class="menu-item">
                                 <!--begin:Menu link-->
                                 <a class="menu-link {% if active_item == 'bon_commande_list'  and active_menu == 'factures' %}active{% endif %}"
-                                   href="">
+                                   href="{% url 'order:devis' %}">
                 <span class="menu-bullet">
                     <span class="bullet bullet-dot"></span>
                 </span>

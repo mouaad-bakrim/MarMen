@@ -7,7 +7,7 @@ class ClientForm(forms.ModelForm):
         fields = [
             'nom', 'prenom', 'societe', 'telephone',
             'adresse', 'ville',
-            'idf', 'rc', 'ice'
+            'idf', 'rc', 'ice','email'
         ]
         widgets = {
             'adresse': forms.Textarea(attrs={'rows': 2}),

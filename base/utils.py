@@ -1,6 +1,5 @@
 from django_tables2 import SingleTableView
 
-from stock.models import Stock
 
 
 def format_phone(phone_number):
@@ -46,16 +45,9 @@ class PagedFilteredTableView(SingleTableView):
         return {self.request}
 
     def get(self, request, *args, **kwargs):
-        if request.htmx:
+        if getattr(request, "htmx", False):
+
             self.template_name = "base/includes/list_table.html"
         return super().get(request, *args, **kwargs)
 
 
-def mettre_a_jour_stock(bon_reception):
-    for article in bon_reception.get_articles():  # Suppose que cette méthode retourne les articles avec quantités
-        # Vérifiez si l'article est déjà dans le stock
-        stock, created = Stock.objects.get_or_create(article=article.article)
-
-        # Ajoutez la quantité reçue au stock existant
-        stock.quantite += article.quantite
-        stock.save()
