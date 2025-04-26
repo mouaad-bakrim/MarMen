@@ -1,0 +1,295 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Détails Bon de Livraison{% endblock %}
+
+{% block toolbar %}
+<!--begin::Toolbar container-->
+<div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-wrap justify-content-between align-items-center py-4">
+    <!--begin::Page title-->
+    <div class="page-title d-flex flex-column justify-content-center flex-grow-1">
+        <!--begin::Title-->
+        <h1 class="page-heading text-dark fw-bold fs-3 mb-2 d-flex align-items-center">
+            <i class="bi bi-file-earmark-text text-primary me-2"></i> Bon de Devis N° {{ devis.code }}
+        </h1>
+        <!--end::Title-->
+
+        <!--begin::Breadcrumb-->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="/" class="text-muted text-hover-primary d-flex align-items-center">
+                        <i class="bi bi-house-door me-1"></i> Accueil
+                    </a>
+                </li>
+                <li class="breadcrumb-item"><span class="bullet bg-gray-500 w-5px h-2px"></span></li>
+                <li class="breadcrumb-item text-muted">Bon de Devis N° {{ devis.code }}</li>
+            </ol>
+        </nav>
+        <!--end::Breadcrumb-->
+    </div>
+    <!--end::Page title-->
+
+    <!--begin::Actions-->
+
+
+<div class="d-flex flex-wrap gap-2">
+    <a href="{% url 'direct:printInvoivebondevisdirect' pk=devis.pk %}"
+       class="btn btn-sm d-flex align-items-center px-3"
+       style="background: linear-gradient(45deg, #ff8c00, #ffcc00); color: white; border: none; transition: 0.3s;">
+        <i class="bi bi-printer me-2"></i> Imprimer Devis
+    </a>
+</div>
+
+
+</div>
+
+
+{% endblock toolbar %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid mt-4">
+    <div id="kt_app_content_container">
+    <div class="card card-flush mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="text-gray-600">Détails du Bon de Devis</h2>
+             <span class="badge
+                {% if devis.etat == 'draft' %} badge-warning
+                {% elif devis.etat == 'accepted' %} badge-success
+                {% else %} badge-danger
+                {% endif %}">
+                {% if devis.etat == 'draft' %}
+                    <i class="bi bi-file-earmark-text me-1"></i> {{ devis.etat|title }}
+                {% elif devis.etat == 'accepted' %}
+                    <i class="bi bi-check-circle-fill me-1"></i> {{ devis.etat|title }}
+                {% else %}
+                    <i class="bi bi-x-circle-fill me-1"></i> {{ devis.etat|title }}
+                {% endif %}
+            </span>
+        </div>
+        <div class="separator separator-dashed border-primary my-2"></div>
+        <div class="card-body">
+            <div class="row row-cols-1 row-cols-md-3 g-3">
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar-event me-2 text-primary"></i>
+                        <span class="fw-bold">Date :</span>
+                        <span class="ms-2 text-dark fw-bolder">{{ devis.date|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person me-2 text-primary"></i>
+                        <span class="fw-bold">Client :</span>
+                        <span class="ms-2 text-dark fw-bolder">{{ devis.client }}</span>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-box me-2 text-primary"></i>
+                        <span class="fw-bold">Produit :</span>
+                        <span class="ms-2 badge bg-secondary">
+                            {{ product_info|default:"Autre" }}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+          <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="fw-bold"><i class="bi bi-droplet text-primary me-2"></i>Quantité</td>
+                        <td>{{ total_quantite|floatformat:0 }}</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold"><i class="bi bi-calculator text-primary me-2"></i>Montant TTC</td>
+                        <td>{{ total|floatformat:2 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+         <div class="text-end mt-3">
+    {% if devis.etat == 'draft' %}
+
+        <!-- Formulaire pour confirmer la commande -->
+        <form id="orderForm" action="{% url 'direct:commande_conf' pk=devis.pk %}" method="post" autocomplete="off">
+            {% csrf_token %}
+            <input type="hidden" name="etat" value="charge">
+            <button class="btn btn-sm btn-success float-end mx-2" type="submit">
+                <span class="menu-icon">
+                    <i class="bi bi-check-circle"></i>
+                </span>
+                Confirmer la commande
+            </button>
+        </form>
+
+        <!-- Formulaire pour annuler le devis -->
+        <form id="cancelForm" action="{% url 'direct:commande_annule_devis' pk=devis.pk %}" method="post" autocomplete="off">
+            {% csrf_token %}
+            <input type="hidden" name="etat" value="charge">
+            <button class="btn btn-sm btn-danger float-end mx-2" type="submit">
+                <span class="menu-icon">
+                    <i class="bi bi-x-circle"></i>
+                </span>
+                Annuler
+            </button>
+        </form>
+
+    {% elif devis.etat == 'accepted' %}
+        <p class="text-success fw-bold">
+            <i class="bi bi-check-circle-fill me-1"></i>Cette commande est déjà confirmée.
+        </p>
+
+    {% elif devis.etat == 'rejected' %}
+        <p class="text-danger fw-bold">
+            <i class="bi bi-x-circle-fill me-1"></i>Cette commande est annulée.
+        </p>
+    {% endif %}
+</div>
+
+        </div>
+    </div>
+
+
+
+</div>
+
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header">
+        <div class="card-title">
+            <h3><i class="bi bi-boxes me-2"></i>Produits livrés</h3>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr class="border-bottom fs-6 fw-bolder text-gray-500 text-uppercase">
+                        <th class="min-w-175px pb-7">
+                            <i class="bi bi-cube me-2 text-primary"></i>Produit
+                        </th>
+                        <th class="min-w-70px pb-7 text-end">
+                            <i class="bi bi-currency-dollar me-2 text-success"></i>Prix Unitaire
+                        </th>
+                        <th class="min-w-70px pb-7 text-end">
+                            <i class="bi bi-graph-up-arrow me-2 text-warning"></i>Quantité
+                        </th>
+                        <th class="min-w-70px pb-7 text-end">
+                            <i class="bi bi-percent me-2 text-info"></i>Remise
+                        </th>
+                        <th class="min-w-70px pb-7 text-end">
+                            <i class="bi bi-bar-chart-line me-2 text-muted"></i>TVA
+                        </th>
+                        <th class="min-w-70px pb-7 text-end">
+                            <i class="bi bi-calculator me-2 text-danger"></i>Total
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr class="fw-bolder text-gray-700 fs-5">
+                        <!-- Display article name, which can be either article.article or produit.nom -->
+                        <td class="d-flex pt-7">
+                            {% if article.article %}
+                                {{ article.article.article }}
+                            {% else %}
+                                {{ article.produit.nom }}
+                            {% endif %}
+                        </td>
+                        <td class="pt-7 text-end">{{ article.prix|floatformat:2 }}</td>
+                        <td class="pt-7 text-end">{{ article.quantite|floatformat:0 }}</td>
+                        <td class="pt-7 text-end">{{ article.remise|floatformat:0 }}</td>
+                        <td class="pt-7 text-end">{{ article.produit.tva|floatformat:0 }}</td>
+                        <td class="pt-7 text-end text-danger">{{ article.montant|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="fw-bolder text-gray-700 fs-5">
+                        <td colspan="4" class="text-end">
+                            <strong><i class="bi bi-cart-check me-2 text-success"></i>Montant Total :</strong>
+                        </td>
+                        <td class="text-end text-success">{{ total|floatformat:2 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
+{% block javascript %}
+
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    let container = document.getElementById("devisLignesContainer");
+
+    // Gérer l'ajout de nouvelles lignes
+    document.getElementById("ajouterLigne").addEventListener("click", function () {
+        let ligneHTML = `
+        <div class="row mb-2 devis-ligne">
+            <div class="col-5">
+                <select name="produit_new[]" class="form-select">
+                    {% for produit in produits %}
+                        <option value="{{ produit.id }}">{{ produit.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-3">
+                <input type="number" name="quantite_new[]" class="form-control" value="1">
+            </div>
+            <div class="col-3">
+                <input type="number" step="0.01" name="prix_new[]" class="form-control" value="0">
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-danger btn-sm remove-ligne">X</button>
+            </div>
+        </div>`;
+        container.insertAdjacentHTML("beforeend", ligneHTML);
+    });
+
+    // Gérer la suppression des lignes
+    container.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-ligne")) {
+            e.target.closest(".devis-ligne").remove();
+        }
+    });
+
+    // Soumettre le formulaire via fetch
+    document.getElementById("modifierDevisForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // Empêcher la soumission classique du formulaire
+
+        let form = this;
+        let formData = new FormData(form);
+
+        fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Devis mis à jour avec succès !");
+                location.reload(); // Recharger la page après succès
+            } else {
+                alert("Erreur lors de la modification du devis.");
+            }
+        })
+        .catch(error => console.error("Erreur:", error));
+    });
+});
+
+</script>
+
+{% endblock %}
+
+

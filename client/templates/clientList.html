@@ -1,0 +1,287 @@
+{% extends "base/base.html" %}  #
+{% load static %}
+
+{% block title %}
+
+    Liste des Commande
+{% endblock %}
+
+{% block css %}
+
+
+<link href="{% static 'assets/css/table.css'%}" rel="stylesheet" type="text/css" />
+{% endblock css %}
+
+
+
+{% block toolbar %}
+
+ <div id="kt_app_toolbar" class="app-toolbar mt-1 shadow-sm bg-light border-bottom">
+    <!-- Toolbar container -->
+    <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex justify-content-between align-items-center py-2">
+
+        <!-- Left section: Page title and breadcrumb -->
+        <div class="d-flex flex-column align-items-start">
+            <!-- Page title with icon -->
+            <h1 class="page-heading text-dark fw-bold fs-4 d-flex align-items-center mb-1">
+                <i class="fa fa-file-invoice me-2 text-primary"></i> Liste des Factures
+            </h1>
+
+            <!-- Breadcrumb -->
+            <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 mb-0">
+                <li class="breadcrumb-item">
+                    <a href="/" class="text-muted text-hover-primary">
+                        <i class="fa fa-home me-1"></i> Accueil
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                </li>
+                <li class="breadcrumb-item text-muted">Liste des Factures</li>
+            </ul>
+        </div>
+        <!-- End Left section -->
+
+        <!-- Right section: Facture count & total amount -->
+        <div class="d-flex align-items-center gap-4">
+            <!-- Facture Count -->
+            <div class="d-flex align-items-center">
+                <span class="fs-6 fw-semibold text-gray-700 pe-2">Factures :</span>
+                <span class="badge bg-primary fs-6 px-3 py-2" id="id_nb_orders">0</span>
+            </div>
+
+            <!-- Separator -->
+            <div class="vr bg-secondary opacity-50 mx-3"></div>
+
+            <!-- Total Amount -->
+            <div class="d-flex align-items-center">
+                <span class="fs-6 fw-semibold text-gray-700 pe-2">Montant :</span>
+                <span class="badge bg-success fs-6 px-3 py-2" id="id_montant_ttc">0,00</span>
+            </div>
+             <button id="download-selected" class="btn btn-outline-primary d-flex align-items-center">
+            <i class="fa fa-download me-2"></i> Export en Excel
+        </button>
+
+            <!-- Download Button -->
+
+       <button id="download-selected-pdf" class="btn btn-outline-primary d-flex align-items-center">
+    <i class="fa fa-download me-2"></i> Exporter en PDF
+</button>
+
+
+
+
+
+
+
+        </div>
+        <!-- End Right section -->
+
+    </div>
+    <!-- End Toolbar container -->
+</div>
+
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="mt-2">
+     {% include 'base/includes/list_filter.html' %}  
+</div>
+{% include 'base/includes/list_table.html' %}
+
+
+
+
+
+
+
+{% endblock content %}
+{% block javascript %}
+
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script>
+    // Sélectionner / désélectionner toutes les checkboxes
+    document.getElementById('toggleCB').addEventListener('change', function() {
+        let checkboxes = document.querySelectorAll('.checkbox_local');
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+</script>
+<script>
+    document.getElementById("download-selected-pdf").addEventListener("click", function() {
+        let selectedFactures = [];
+        document.querySelectorAll(".checkbox_local:checked").forEach(checkbox => {
+            selectedFactures.push(checkbox.value);
+        });
+
+        if (selectedFactures.length === 0) {
+            alert("Veuillez sélectionner au moins une facture.");
+            return;
+        }
+
+        let url = "{% url 'invoice:export_invoices_pdf' %}";
+        let form = document.createElement("form");
+        form.method = "POST";
+        form.action = url;
+        form.style.display = "none";
+
+        let csrfInput = document.createElement("input");
+        csrfInput.type = "hidden";
+        csrfInput.name = "csrfmiddlewaretoken";
+        csrfInput.value = "{{ csrf_token }}";
+        form.appendChild(csrfInput);
+
+        let input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "bonlivresion";
+        input.value = selectedFactures.join(",");
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+    });
+</script>
+<script>
+document.getElementById("download-selected").addEventListener("click", function() {
+    let selectedFactures = [];
+    document.querySelectorAll(".checkbox_local:checked").forEach(checkbox => {
+        selectedFactures.push(checkbox.value);
+    });
+
+    if (selectedFactures.length === 0) {
+        alert("Veuillez sélectionner au moins une facture.");
+        return;
+    }
+
+    let url = "{% url 'invoice:export_invoices_xlsx' %}";  // Assure-toi que cette URL est correcte
+    let form = document.createElement("form");
+    form.method = "POST";
+    form.action = url;
+    form.style.display = "none";
+
+    let csrfInput = document.createElement("input");
+    csrfInput.type = "hidden";
+    csrfInput.name = "csrfmiddlewaretoken";
+    csrfInput.value = "{{ csrf_token }}";
+    form.appendChild(csrfInput);
+
+    let input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "bonlivresion";
+    input.value = selectedFactures.join(",");
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+    form.submit();
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    function updateTotals() {
+        let selectedRows = $('.checkbox_local:checked');
+        let nombreSelectionnes = selectedRows.length;
+        let montant_ttcTotal = 0.0;
+
+        let selectedBons = [];
+        let clients = new Set();
+
+        selectedRows.each(function() {
+            // Montant total de la facture
+            let montant_ttcHtCell = $(this).closest('tr').find('td[data-field="montant_ttc"]');
+            let montant_ttcHtAmount = parseFloat(montant_ttcHtCell.text().replace(/[^0-9.,]+/g, "")) || 0;
+            montant_ttcTotal += montant_ttcHtAmount;
+
+            // Bons sélectionnés
+            selectedBons.push($(this).val());
+
+            // Récupération du client
+            let clientCell = $(this).closest('tr').find('td[data-field="client"]');
+            let client = clientCell.text().trim();
+            clients.add(client);
+        });
+
+        // Mise à jour des informations
+        $('#id_nb_orders').text(nombreSelectionnes);
+        $('#id_montant_ttc').text(montant_ttcTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ").replace('.', ','));
+        $('#selected_bons').val(selectedBons.join(','));
+
+        // Vérification si les bons appartiennent au même client
+        if (clients.size > 1) {
+            // Si les clients sont différents, on affiche le message d'alerte et on désactive le bouton
+            $('#errorModalMessage').text("Attention : Les bons de livraison appartiennent à des clients différents. Veuillez sélectionner des bons appartenant au même client.");
+            $('#errorModal').modal('show');
+            $("#accepterBtn").prop("disabled", true); // Désactive le bouton
+        } else {
+            // Si le même client est sélectionné pour toutes les factures, on cache le message et active le bouton
+            $('#errorModal').modal('hide');
+            $("#accepterBtn").prop("disabled", nombreSelectionnes === 0); // Active le bouton si au moins une facture est sélectionnée
+        }
+    }
+
+    // Écouteur d'événement pour la sélection des cases à cocher
+    $(document).on('change', '.checkbox_local', updateTotals);
+
+    // Écouteur d'événement pour le bouton "tout sélectionner"
+    $(document).on('change', '#toggleCB', function() {
+        $('.checkbox_local').prop("checked", this.checked);
+        updateTotals();
+    });
+});
+</script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const confirmButton = document.getElementById('confirmAction');
+    const acceptButton = document.getElementById('accepterBtn');
+
+    confirmButton.addEventListener('click', function() {
+        // Logique pour traiter la demande de gestion de facture
+        console.log('Facture gérée');
+
+        // Ici, tu pourrais soumettre le formulaire ou rediriger l'utilisateur
+        document.getElementById('acceptForm').submit();
+    });
+});
+
+</script>
+<script>
+    document.getElementById('confirmAction').addEventListener('click', function() {
+    let montantPaye = document.getElementById('montant').value;
+    let scanRecu = document.getElementById('scan_recu').files[0];
+
+    // Assuming you have the 'facture_id' or other relevant data on the page
+    let factureId = document.getElementById('facture_id').value;
+
+    let formData = new FormData();
+    formData.append('montant_paye', montantPaye);
+    formData.append('scan_recu', scanRecu);
+    formData.append('facture_id', factureId);
+
+    fetch('/regler_facture/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Handle success (e.g., show success message, update UI)
+            alert('Montant payé enregistré avec succès.');
+            // Optionally, close the modal
+            $('#attentionModal').modal('hide');
+        } else {
+            // Handle error
+            alert('Erreur: ' + data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+</script>
+{% endblock %}
+

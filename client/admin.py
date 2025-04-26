@@ -5,20 +5,20 @@ from .models import Client
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
     list_display = (
-        'nom', 'prenom', 'societe', 'email', 'telephone',
-        'ville', 'pays', 'date_creation'
+        'nom', 'prenom', 'societe', 'telephone',
+        'ville', 'date_creation'
     )
-    list_filter = ('ville', 'pays', 'date_creation')
-    search_fields = ('nom', 'prenom', 'societe', 'email', 'telephone')
+    list_filter = ('ville',  'date_creation')
+    search_fields = ('nom', 'prenom', 'societe',  'telephone')
     ordering = ('-date_creation',)
     fieldsets = (
         ("Informations Générales", {
-            'fields': ('nom', 'prenom', 'societe', 'email', 'telephone')
+            'fields': ('nom', 'prenom', 'societe', 'telephone')
         }),
         ("Adresse", {
-            'fields': ('adresse', 'ville', 'code_postal', 'pays')
+            'fields': ('adresse', 'ville')
         }),
         ("Informations Légales", {
-            'fields': ('numero_identification_fiscale', 'registre_commerce', 'site_web')
+            'fields': ('idf', 'rc', 'ice')
         }),
     )

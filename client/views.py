@@ -6,7 +6,7 @@ def ajouter_client(request):
         form = ClientForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('liste_clients')  # à adapter selon ta route de retour
+            return redirect('client:ajouter_client')  # à adapter selon ta route de retour
     else:
         form = ClientForm()
     return render(request, 'add_client.html', {'form': form})

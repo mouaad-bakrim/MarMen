@@ -65,7 +65,7 @@
                     <div class="menu-item pt-5">
                         <!--begin:Menu content-->
                         <div class="menu-content">
-                            <span class="menu-heading fw-bold text-uppercase fs-7">Invoice</span>
+                            <span class="menu-heading fw-bold text-uppercase fs-7">Client</span>
                         </div>
                         <!--end:Menu content-->
                     </div>
@@ -97,22 +97,85 @@
 									</span>
 
                     </div>
-                    <div
-                    class="menu-item menu-accordion  {% if active_menu == 'invoice' %}here show{% endif %} ">
-                <!--begin:Menu link-->
-                <span class="menu-link">
-                                <span class="menu-icon">
-                                    <i class="fa-solid fa-file-invoice fs-2 text-primary"></i>
 
-                                </span>
-                     <a class="menu-link {% if active_item == 'plafont'  and active_menu == 'invoice'  %}active{% endif %}"
-                        href="">
-                                <span class="menu-title">Ajouter Devis  </span>
-</a>
-                            </span>
+ <div data-kt-menu-trigger="click"
+                         class="menu-item menu-accordion {% if active_menu == 'factures' %}here show{% endif %} ">
+                        <!--begin:Menu link-->
+                        <span class="menu-link">
+        <span class="menu-icon">
+                     <img width="22" height="22" src="https://img.icons8.com/dusk/64/invoice.png" alt="invoice"/>
 
-            </div>
+        </span>
+        <span class="menu-title">Facturation</span>
+        <span class="menu-arrow"></span>
+    </span>
+                        <!--end:Menu link-->
+                        <!--begin:Menu sub-->
+                        <div class="menu-sub menu-sub-accordion">
 
+                             <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link {% if active_item == 'bon_devis_list'  and active_menu == 'factures' %}active{% endif %}"
+                                   href="{% url 'order:add_order' %}">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                                    <span class="menu-title">Order</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
+                             <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link {% if active_item == 'bon_commande_list'  and active_menu == 'factures' %}active{% endif %}"
+                                   href="">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                                    <span class="menu-title">Devis</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link {% if active_item == 'bonclient_list'  and active_menu == 'factures' %}active{% endif %}"
+                                   href="">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                                    <span class="menu-title">Bon Commande</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
+                             <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link {% if active_item == 'bondirect_list'  and active_menu == 'factures' %}active{% endif %}"
+                                   href="">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                                    <span class="menu-title">Bon Livraison</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link {% if active_item == 'facture_tqas'  and active_menu == 'factures'  %}active{% endif %}"
+                                   href="">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                                    <span class="menu-title">Facture Client </span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
+                        </div>
+                        <!--end:Menu sub-->
+                    </div>
 
                 </div>
 

@@ -5,9 +5,9 @@ class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
         fields = [
-            'nom', 'prenom', 'societe', 'email', 'telephone',
-            'adresse', 'ville', 'code_postal', 'pays',
-            'numero_identification_fiscale', 'registre_commerce', 'site_web'
+            'nom', 'prenom', 'societe', 'telephone',
+            'adresse', 'ville',
+            'idf', 'rc', 'ice'
         ]
         widgets = {
             'adresse': forms.Textarea(attrs={'rows': 2}),
