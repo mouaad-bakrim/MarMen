@@ -92,14 +92,13 @@ class OrderLigne(models.Model):
     remise = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Remise (%)')
 
     def save(self, *args, **kwargs):
-        # Calcule automatiquement le montant avant de sauvegarder
         remise_appliquee = (1 - (self.remise / 100))
         self.montant = self.prix * self.quantite * remise_appliquee
-
         super().save(*args, **kwargs)
 
-        # Après avoir sauvé la ligne, on met à jour le montant total de la commande
-        self.order.update_montant_total()
+        # Met à jour automatiquement le montant de l'Order
+        if self.order:
+            self.order.update_montant_total()
 
     def __str__(self):
         return f"{self.produit} - {self.quantite} unités"

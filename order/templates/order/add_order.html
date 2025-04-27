@@ -118,7 +118,7 @@
             size="1"
             data-dropdown-auto-width="true"
     onchange="updatePrix(this)">
-       <option value="" disabled selected>Veuillez sélectionner un article</option>
+<option value="{{ article.id }}" data-price="{{ article.prix }}">{{ article.nom }}</option>
         {% for article in articles %}
 
                <option value="{{ article.id }}" data-price="{{ article.prix }}">{{ article.nom }} </option>

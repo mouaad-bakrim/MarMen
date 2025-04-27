@@ -6,12 +6,11 @@ import math
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import Paragraph
 from num2words import num2words  # Assurez-vous d'importer num2words
-from base.pdf_utils import draw_page_nb, draw_footer,draw_info
-from direct.pdf_bc_fa import (
+from base.pdf_utils import draw_page_nb, draw_footer
+from order.pdf_bc_fa import (
     draw_page_nb, draw_footer, draw_document_info, draw_orderly_simple_table, draw_header
 )
 from .pdf_utils_dir import draw_summary_table
-from station.models import Produit
 
 
 def bon_de_livraison_direct_print(buffer, commandes, utilisateur_nom, document_type):

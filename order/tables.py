@@ -111,7 +111,7 @@ class DevisListTable(tables.Table):
         }
     )
     code = tables.TemplateColumn(
-        '<a href="">{{ record.code }}</a>',
+        '<a href="{% url "order:Detail_devis_direct" record.id %}">{{ record.code }}</a>',
         verbose_name="Bon de Devis"
     )
 

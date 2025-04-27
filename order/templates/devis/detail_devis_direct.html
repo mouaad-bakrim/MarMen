@@ -34,7 +34,7 @@
 
 
 <div class="d-flex flex-wrap gap-2">
-    <a href="{% url 'direct:printInvoivebondevisdirect' pk=devis.pk %}"
+    <a href="{% url 'order:printInvoivebondevisdirect' pk=devis.pk %}"
        class="btn btn-sm d-flex align-items-center px-3"
        style="background: linear-gradient(45deg, #ff8c00, #ffcc00); color: white; border: none; transition: 0.3s;">
         <i class="bi bi-printer me-2"></i> Imprimer Devis
@@ -114,7 +114,7 @@
     {% if devis.etat == 'draft' %}
 
         <!-- Formulaire pour confirmer la commande -->
-        <form id="orderForm" action="{% url 'direct:commande_conf' pk=devis.pk %}" method="post" autocomplete="off">
+        <form id="orderForm" action="" method="post" autocomplete="off">
             {% csrf_token %}
             <input type="hidden" name="etat" value="charge">
             <button class="btn btn-sm btn-success float-end mx-2" type="submit">
@@ -126,7 +126,7 @@
         </form>
 
         <!-- Formulaire pour annuler le devis -->
-        <form id="cancelForm" action="{% url 'direct:commande_annule_devis' pk=devis.pk %}" method="post" autocomplete="off">
+        <form id="cancelForm" action="" method="post" autocomplete="off">
             {% csrf_token %}
             <input type="hidden" name="etat" value="charge">
             <button class="btn btn-sm btn-danger float-end mx-2" type="submit">
